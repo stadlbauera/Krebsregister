@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace Krebsregister
 {
     internal class Class1
+
     {
+        String testvariable;
     }
 }
