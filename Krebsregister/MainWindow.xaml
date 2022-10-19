@@ -4,9 +4,50 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Krebsregister"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <Button x:Name="bDesign1" Content="Design-1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="bDesign1_Click"/>
+        <!--<lvc:GeoMap x:Name="gmap" HeatMap="{Binding Values}"  LanguagePack="{Binding LanguagePack}" />-->
+        <lvc:CartesianChart Series="{Binding SeriesCollection}" LegendLocation="Right" VerticalAlignment="Top" Height="217" HorizontalAlignment="Left" Width="400">
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+            </lvc:CartesianChart.AxisY>
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+        </lvc:CartesianChart>
+        <lvc:CartesianChart Series="{Binding SeriesCollectionBC}" LegendLocation="Left" VerticalAlignment="Bottom" Height="217"  HorizontalAlignment="Left" Width="400">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Title="Salesman" Labels="{Binding LabelsBC}"></lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Sold Apps" LabelFormatter="{Binding Formatter}"></lvc:Axis>
+            </lvc:CartesianChart.AxisY>
+        </lvc:CartesianChart>
+        <lvc:PieChart LegendLocation="Bottom" DataClick="Chart_OnDataClick" Hoverable="False" DataTooltip="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Top" Height="217" Width="400">
+            <lvc:PieChart.Series>
+                <lvc:PieSeries Title="Maria" Values="3" DataLabels="True"
+                               LabelPoint="{Binding PointLabel}"/>
+                <lvc:PieSeries Title="Charles" Values="4" DataLabels="True" 
+                               LabelPoint="{Binding PointLabel}"/>
+                <lvc:PieSeries Title="Frida" Values="6" DataLabels="True" 
+                               LabelPoint="{Binding PointLabel}"/>
+                <lvc:PieSeries Title="Frederic" Values="2" DataLabels="True" 
+                               LabelPoint="{Binding PointLabel}"/>
+            </lvc:PieChart.Series>
+        </lvc:PieChart>
+        <lvc:CartesianChart Series="{Binding SeriesCollectionNSC}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="217" Width="400">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis LabelFormatter="{Binding FormatterNSC}"></lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Age Range" Labels="{Binding LabelsNSC}"></lvc:Axis>
+            </lvc:CartesianChart.AxisY>
+            <lvc:CartesianChart.DataTooltip>
+                <lvc:DefaultTooltip SelectionMode="SharedYValues"></lvc:DefaultTooltip>
+            </lvc:CartesianChart.DataTooltip>
+        </lvc:CartesianChart>
     </Grid>
 </Window>
