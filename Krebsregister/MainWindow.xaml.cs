@@ -156,5 +156,10 @@ namespace Krebsregister
         {
             new Design1().Show();
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Versuch CSV-Dateien herunterzuladen
+        }
     }
 }

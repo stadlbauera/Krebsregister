@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Krebsregister"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Button x:Name="bDesign1" Content="Design-1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="bDesign1_Click"/>
         <!--<lvc:GeoMap x:Name="gmap" HeatMap="{Binding Values}"  LanguagePack="{Binding LanguagePack}" />-->
