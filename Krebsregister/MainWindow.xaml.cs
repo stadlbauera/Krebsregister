@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Net;
+using System.IO;
 
 namespace Krebsregister
 {
@@ -160,6 +162,29 @@ namespace Krebsregister
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //Versuch CSV-Dateien herunterzuladen
+
+            List<string> urls = new List<string>();
+            urls.Add("OGD_krebs_ext_KREBS_1");
+            urls.Add("OGD_krebs_ext_KREBS_1_HEADER");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-TUM_ICD10_3ST-0");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-BERJ-0");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-BUNDESLAND-0");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-KRE_GESCHLECHT-0");
+
+            for (int i = 0; i < urls.Count; i++)
+            {
+                string url = $@"https://data.statistik.gv.at/data/{urls[i]}.csv";
+
+                using (WebClient wc = new WebClient())
+                {
+                    byte[] buffer = wc.DownloadData(url);
+                    string path = $@"C:\Users\lilia\OneDrive\Dokumente\Schule\pre\5_klasse\Experiment\{urls[i]}.csv";
+                    Stream stream = new FileStream(path, FileMode.Create);
+                    BinaryWriter writer = new BinaryWriter(stream);
+                    writer.Write(buffer);
+                    stream.Close();
+                }
+            }
         }
     }
 }
