@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Krebsregister.DatenbankModel
 {
-    internal class Geschlecht
+    public class Geschlecht
     {
+        public int GeschlechtID { get; set; }
+        public string HatGeschlecht { get; set; }
+
     }
 }

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Krebsregister.DatenbankModel
 {
-    internal class ICD10
+    public class ICD10
     {
+        public int ICD10ID { get; set; }
+        public string ICD10Code { get; set; }
+        public string NameICD10 { get; set; }
+
     }
 }
