@@ -162,7 +162,7 @@ namespace Krebsregister
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //GetCSVDateien();
-            string[] results = GetContentInString();
+            string[] results_here = GetContentInString();
 
         }
 
