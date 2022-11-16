@@ -161,7 +161,12 @@ namespace Krebsregister
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //Versuch CSV-Dateien herunterzuladen
+            //GetCSVDateien();
+        }
+
+        private void GetCSVDateien()
+        {
+            //CSV-Dateien herunterladen
 
             List<string> urls = new List<string>();
             urls.Add("OGD_krebs_ext_KREBS_1");
