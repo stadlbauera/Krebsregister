@@ -162,6 +162,8 @@ namespace Krebsregister
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //GetCSVDateien();
+
+
         }
 
         private void GetCSVDateien()
@@ -190,6 +192,51 @@ namespace Krebsregister
                     stream.Close();
                 }
             }
+        }
+
+        private string GetContentInString()
+        {
+            List<string> urls = new List<string>();
+            urls.Add("OGD_krebs_ext_KREBS_1");
+            urls.Add("OGD_krebs_ext_KREBS_1_HEADER");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-TUM_ICD10_3ST-0");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-BERJ-0");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-BUNDESLAND-0");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-KRE_GESCHLECHT-0");
+
+            for (int i = 0; i < urls.Count; i++)
+            {
+                WebRequest request = WebRequest.Create($"https://data.statistik.gv.at/data/{urls[i]}.csv");
+                request.Method = "GET";
+                WebResponse response = request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+                List<string> content = new List<string>();
+                while (true) { 
+                    string line = reader.ReadLine();
+                    if (line == "")
+                    {
+                        break;
+                    }
+                    content.Add(line);
+                }
+                reader.Close();
+                response.Close();
+
+                FormatCode(content);
+            }
+
+            return "";
+        }
+
+        private string[] FormatCode(List<string> source)
+        {
+            for (int i = 1; i < source.Count; i++)
+            {
+                
+            }
+
+            return null;
         }
     }
 }
