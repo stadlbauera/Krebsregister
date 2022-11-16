@@ -19,8 +19,10 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>            
         </Grid.RowDefinitions>
+        <!--GEOHEATMAP********************************************************************************************************************************************************************************-->
         <Image Source="C:\Users\Markus Stadlbauer\Documents\Schule\5. Klasse\PRE\Projekt\Heatmap.png" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
-        <lvc:PieChart Grid.Column="2" Grid.Row="1" DataClick="Chart_OnDataClick" LegendLocation="Bottom"  Hoverable="False" DataTooltip="{x:Null}">
+        <!--PIECHART**********************************************************************************************************************************************************************************-->
+        <lvc:PieChart Grid.Column="2" Grid.Row="1" LegendLocation="Bottom" DataClick="PieChart_DataClick" Hoverable="False" DataTooltip="{x:Null}" HorizontalAlignment="Right" VerticalAlignment="Top" Height="217" Width="400">
             <lvc:PieChart.Series>
                 <lvc:PieSeries Title="Maria" Values="3" DataLabels="True"
                                LabelPoint="{Binding PointLabel}"/>
@@ -32,18 +34,8 @@
                                LabelPoint="{Binding PointLabel}"/>
             </lvc:PieChart.Series>
         </lvc:PieChart>
-        <lvc:PieChart Grid.Column="1" Grid.Row="2" DataClick="Chart_OnDataClick" LegendLocation="Bottom"  Hoverable="False" DataTooltip="{x:Null}">
-            <lvc:PieChart.Series>
-                <lvc:PieSeries Title="Maria" Values="3" DataLabels="True"
-                               LabelPoint="{Binding PointLabel}"/>
-                <lvc:PieSeries Title="Charles" Values="4" DataLabels="True" 
-                               LabelPoint="{Binding PointLabel}"/>
-                <lvc:PieSeries Title="Frida" Values="6" DataLabels="True" 
-                               LabelPoint="{Binding PointLabel}"/>
-                <lvc:PieSeries Title="Frederic" Values="2" DataLabels="True" 
-                               LabelPoint="{Binding PointLabel}"/>
-            </lvc:PieChart.Series>
-        </lvc:PieChart>
+        <!--PIECHARTGrid.Column="1" Grid.Row="2"********************************************************************************************************************************************************************************-->
+        
         <lvc:CartesianChart Grid.Column="3" Grid.Row="0" Series="{Binding SeriesCollection}" LegendLocation="Right">
             <lvc:CartesianChart.AxisY>
                 <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
