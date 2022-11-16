@@ -57,5 +57,7 @@ namespace Krebsregister
         {
             Application.Current.Shutdown();
         }
+
+       
     }
 }
