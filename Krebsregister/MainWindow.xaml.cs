@@ -162,6 +162,8 @@ namespace Krebsregister
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //GetCSVDateien();
+            string[] results_here = GetContentInString();
+
         }
 
         private void GetCSVDateien()
@@ -190,6 +192,56 @@ namespace Krebsregister
                     stream.Close();
                 }
             }
+        }
+
+        private string[] GetContentInString()
+        {
+            List<string> urls = new List<string>();
+            urls.Add("OGD_krebs_ext_KREBS_1");
+            urls.Add("OGD_krebs_ext_KREBS_1_HEADER");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-TUM_ICD10_3ST-0");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-BERJ-0");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-BUNDESLAND-0");
+            urls.Add("OGD_krebs_ext_KREBS_1_C-KRE_GESCHLECHT-0");
+
+            for (int i = 0; i < urls.Count; i++)
+            {
+                WebRequest request = WebRequest.Create($"https://data.statistik.gv.at/data/{urls[i]}.csv");
+                request.Method = "GET";
+                WebResponse response = request.GetResponse();
+                Stream stream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(stream);
+
+                int firstLineSkip = 0;
+
+                while (true)
+                {
+                    string line = reader.ReadLine();
+                    if (firstLineSkip > 0)
+                    {
+                        if (line == "")
+                        {
+                            break;
+                        }
+                        string[] results = new string[20];
+                        TryParse(line, out results);
+                        return results;
+                    }
+                    firstLineSkip++;
+                }
+                reader.Close();
+                response.Close();
+
+            }
+
+            return null;
+        }
+
+        private void TryParse(string line, out string[] results)
+        { 
+            // value von lines wird als objekt erzeugt
+            string[] lines = line.Split(";");
+            results =  lines;
         }
     }
 }
