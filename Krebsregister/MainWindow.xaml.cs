@@ -162,7 +162,7 @@ namespace Krebsregister
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //GetCSVDateien();
-
+            string[] results = GetContentInString();
 
         }
 
@@ -194,7 +194,7 @@ namespace Krebsregister
             }
         }
 
-        private string GetContentInString()
+        private string[] GetContentInString()
         {
             List<string> urls = new List<string>();
             urls.Add("OGD_krebs_ext_KREBS_1");
@@ -211,32 +211,37 @@ namespace Krebsregister
                 WebResponse response = request.GetResponse();
                 Stream stream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(stream);
-                List<string> content = new List<string>();
-                while (true) { 
+
+                int firstLineSkip = 0;
+
+                while (true)
+                {
                     string line = reader.ReadLine();
-                    if (line == "")
+                    if (firstLineSkip > 0)
                     {
-                        break;
+                        if (line == "")
+                        {
+                            break;
+                        }
+                        string[] results = new string[20];
+                        TryParse(line, out results);
+                        return results;
                     }
-                    content.Add(line);
+                    firstLineSkip++;
                 }
                 reader.Close();
                 response.Close();
 
-                FormatCode(content);
-            }
-
-            return "";
-        }
-
-        private string[] FormatCode(List<string> source)
-        {
-            for (int i = 1; i < source.Count; i++)
-            {
-                
             }
 
             return null;
+        }
+
+        private void TryParse(string line, out string[] results)
+        { 
+            // value von lines wird als objekt erzeugt
+            string[] lines = line.Split(";");
+            results =  lines;
         }
     }
 }
