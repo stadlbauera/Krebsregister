@@ -81,6 +81,7 @@
                         <lvc:Axis Title="Sold Apps" LabelFormatter="{Binding Formatter}"></lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                 </lvc:CartesianChart>
+                
             </Grid>
         </TabItem>
         <TabItem Header="Erweiterte Statistik">

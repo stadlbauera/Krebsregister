@@ -16,6 +16,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using System.IO;
+using Krebsregister.DatenbankModel;
+using System.Security.Cryptography;
 
 namespace Krebsregister
 {
@@ -162,8 +164,56 @@ namespace Krebsregister
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //GetCSVDateien();
-            string[] results_here = GetContentInString();
+            createBundeslandDictionary();
+            createGeschlechtDictionary();
+            readEintraege();
+            for(int i = 0; i < testEintraege.Count; i++)
+            {
+                lvtestEintraege.Items.Add(testEintraege[i].ToString());
+            }
+            
 
+        }
+
+        Dictionary<String, String> geschlechterdic = new Dictionary<string, string>();
+        private void createGeschlechtDictionary()
+        {
+            WebRequest request = WebRequest.Create("https://data.statistik.gv.at/data/OGD_krebs_ext_KREBS_1_C-KRE_GESCHLECHT-0.csv");
+            request.Method = "GET";
+            WebResponse response = request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+
+            reader.ReadLine();
+
+            while (!reader.EndOfStream)
+            {
+                string[] fields = reader.ReadLine().Split(";");
+                geschlechterdic.Add(fields[0], fields[1]);
+            }
+            reader.Close();
+            response.Close();
+        }
+
+        Dictionary<String, String> bundeslaenderdic = new Dictionary<string, string>();
+
+        private void createBundeslandDictionary()
+        {
+            WebRequest request = WebRequest.Create("https://data.statistik.gv.at/data/OGD_krebs_ext_KREBS_1_C-BUNDESLAND-0.csv");
+            request.Method = "GET"; 
+            WebResponse response = request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+
+            reader.ReadLine();
+
+            while (!reader.EndOfStream)
+            {
+                string[] fields = reader.ReadLine().Split(";");
+                bundeslaenderdic.Add(fields[0], fields[1]);
+            }
+            reader.Close();
+            response.Close();
         }
 
         private void GetCSVDateien()
@@ -193,55 +243,42 @@ namespace Krebsregister
                 }
             }
         }
+        List<TestEintrag> testEintraege = new List<TestEintrag>();
 
-        private string[] GetContentInString()
+        private void readEintraege()
         {
-            List<string> urls = new List<string>();
-            urls.Add("OGD_krebs_ext_KREBS_1");
-            urls.Add("OGD_krebs_ext_KREBS_1_HEADER");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-TUM_ICD10_3ST-0");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-BERJ-0");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-BUNDESLAND-0");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-KRE_GESCHLECHT-0");
-
-            for (int i = 0; i < urls.Count; i++)
-            {
-                WebRequest request = WebRequest.Create($"https://data.statistik.gv.at/data/{urls[i]}.csv");
+            
+                WebRequest request = WebRequest.Create("https://data.statistik.gv.at/data/OGD_krebs_ext_KREBS_1.csv");
                 request.Method = "GET";
                 WebResponse response = request.GetResponse();
                 Stream stream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(stream);
 
-                int firstLineSkip = 0;
+                reader.ReadLine();
 
-                while (true)
+                while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine();
-                    if (firstLineSkip > 0)
-                    {
-                        if (line == "")
-                        {
-                            break;
-                        }
-                        string[] results = new string[20];
-                        TryParse(line, out results);
-                        return results;
-                    }
-                    firstLineSkip++;
-                }
+                    TestEintrag newEintrag;
+                    TryParse(line, out newEintrag);
+                    testEintraege.Add(newEintrag);
+                 }
                 reader.Close();
                 response.Close();
 
-            }
+            
 
-            return null;
+            
         }
 
-        private void TryParse(string line, out string[] results)
+        private void TryParse(string line, out TestEintrag newEintrag)
         { 
-            // value von lines wird als objekt erzeugt
-            string[] lines = line.Split(";");
-            results =  lines;
+            string[] fields = line.Split(";");
+            newEintrag = new TestEintrag { ICD10 = fields[0].Replace("TUM_ICD10_3ST-", ""),
+                Berichtsjahr = Int32.Parse(fields[1].Replace("BERJ-", "")),
+                Bundesland = bundeslaenderdic[fields[2]],
+                Geschlecht = geschlechterdic[fields[3]],
+                AnzahlMeldungen = Int32.Parse(fields[4])};
         }
     }
 }
