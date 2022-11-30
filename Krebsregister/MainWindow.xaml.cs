@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using System.IO;
-using Krebsregister.DatenbankModel;
+
 using System.Security.Cryptography;
 
 namespace Krebsregister
@@ -166,6 +166,7 @@ namespace Krebsregister
             //GetCSVDateien();
             createBundeslandDictionary();
             createGeschlechtDictionary();
+            createKrebsDictionary();
             readEintraege();
             for(int i = 0; i < testEintraege.Count; i++)
             {
@@ -173,6 +174,27 @@ namespace Krebsregister
             }
             
 
+        }
+
+        Dictionary<String, String> krebsdic = new Dictionary<string, string>();
+
+        private void createKrebsDictionary()
+        {
+            WebRequest request = WebRequest.Create("https://data.statistik.gv.at/data/OGD_krebs_ext_KREBS_1_C-TUM_ICD10_3ST-0.csv");
+            request.Method = "GET";
+            WebResponse response = request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+
+            reader.ReadLine();
+
+            while (!reader.EndOfStream)
+            {
+                string[] fields = reader.ReadLine().Split(";");
+                krebsdic.Add(fields[0], fields[1].Substring(6));
+            }
+            reader.Close();
+            response.Close();
         }
 
         Dictionary<String, String> geschlechterdic = new Dictionary<string, string>();
@@ -274,7 +296,7 @@ namespace Krebsregister
         private void TryParse(string line, out TestEintrag newEintrag)
         { 
             string[] fields = line.Split(";");
-            newEintrag = new TestEintrag { ICD10 = fields[0].Replace("TUM_ICD10_3ST-", ""),
+            newEintrag = new TestEintrag { ICD10 = krebsdic[fields[0]],
                 Berichtsjahr = Int32.Parse(fields[1].Replace("BERJ-", "")),
                 Bundesland = bundeslaenderdic[fields[2]],
                 Geschlecht = geschlechterdic[fields[3]],
