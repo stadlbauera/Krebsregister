@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using System.IO;
+using Krebsregister.DatenbankModel;
 
 namespace Krebsregister
 {
@@ -164,6 +165,7 @@ namespace Krebsregister
             //GetCSVDateien();
             string[] results_here = GetContentInString();
 
+           
         }
 
         private void GetCSVDateien()
