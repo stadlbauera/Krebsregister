@@ -176,7 +176,7 @@ namespace Krebsregister
 
         }
 
-        Dictionary<String, String> krebsdic = new Dictionary<string, string>();
+        Dictionary<String, String> krebsdic = new Dictionary<string, string>(); 
 
         private void createKrebsDictionary()
         {
