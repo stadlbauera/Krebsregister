@@ -40,7 +40,6 @@
                     <ComboBoxItem>2021</ComboBoxItem>
                 </ComboBox>
                 <Viewbox x:Name="vbAustria" Margin="0,96,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <lvc:GeoMap x:Name="gmap" HeatMap="{Binding Values}" Source="C:\Users\Markus Stadlbauer\Documents\Schule\5.Klasse\PRE\Projekt\Code\Krebsregister\Austria.xml" LanguagePack="{Binding LanguagePack}" Loaded="gmap_Loaded" />
                 </Viewbox>
             </Grid>
         </GroupBox>

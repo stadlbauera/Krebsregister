@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using System.IO;
+using System.Data.SqlClient;
 
 namespace Krebsregister
 {
@@ -31,6 +32,7 @@ namespace Krebsregister
             BarChart();
             PieChart();
             NegativStackChart();
+            TestDatabase();
         }
 
         public SeriesCollection SeriesCollection { get; set; }
@@ -242,6 +244,21 @@ namespace Krebsregister
             // value von lines wird als objekt erzeugt
             string[] lines = line.Split(";");
             results =  lines;
+        }
+
+        public void TestDatabase()
+        {
+            string constring = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\lilia\\OneDrive\\Dokumente\\Schule\\pre\\5_klasse\\Projekt\\Krebsregister\\Krebsregister\\Krebsregister_Database.mdf;Integrated Security=True";
+            SqlConnection connection = new SqlConnection(constring);
+            if(connection.State != System.Data.ConnectionState.Open)
+            {
+                connection.Open();
+            }
+
+            SqlCommand cmd = new SqlCommand("insert into Test (id) values (@id)", connection);
+            cmd.Parameters.AddWithValue("@id", 1);
+            cmd.ExecuteNonQuery();
+            connection.Close();
         }
     }
 }
