@@ -32,7 +32,6 @@ namespace Krebsregister
             BarChart();
             PieChart();
             NegativStackChart();
-            TestDatabase();
         }
 
         public SeriesCollection SeriesCollection { get; set; }
@@ -163,102 +162,82 @@ namespace Krebsregister
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //GetCSVDateien();
-            string[] results_here = GetContentInString();
-
+            FillDatabase();
         }
 
-        private void GetCSVDateien()
+
+        private List<string[]> ReadInCSV(string webPath)
         {
-            //CSV-Dateien herunterladen
+            List<string[]> fieldsList = new List<string[]>();
+            WebRequest request = WebRequest.Create(webPath);
+            request.Method = "GET";
+            WebResponse response = request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
 
-            List<string> urls = new List<string>();
-            urls.Add("OGD_krebs_ext_KREBS_1");
-            urls.Add("OGD_krebs_ext_KREBS_1_HEADER");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-TUM_ICD10_3ST-0");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-BERJ-0");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-BUNDESLAND-0");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-KRE_GESCHLECHT-0");
+            reader.ReadLine();
 
-            for (int i = 0; i < urls.Count; i++)
+            while (!reader.EndOfStream)
             {
-                string url = $@"https://data.statistik.gv.at/data/{urls[i]}.csv";
-
-                using (WebClient wc = new WebClient())
-                {
-                    byte[] buffer = wc.DownloadData(url);
-                    string path = $@"C:\Users\Markus Stadlbauer\Documents\Schule\5. Klasse\PRE\Projekt\{urls[i]}.csv";
-                    Stream stream = new FileStream(path, FileMode.Create);
-                    BinaryWriter writer = new BinaryWriter(stream);
-                    writer.Write(buffer);
-                    stream.Close();
-                }
+                string[] fields = reader.ReadLine().Split(";");
+                fieldsList.Add(fields);
             }
+            reader.Close();
+            response.Close();
+            return fieldsList;
         }
 
-        private string[] GetContentInString()
-        {
-            List<string> urls = new List<string>();
-            urls.Add("OGD_krebs_ext_KREBS_1");
-            urls.Add("OGD_krebs_ext_KREBS_1_HEADER");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-TUM_ICD10_3ST-0");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-BERJ-0");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-BUNDESLAND-0");
-            urls.Add("OGD_krebs_ext_KREBS_1_C-KRE_GESCHLECHT-0");
+        
 
-            for (int i = 0; i < urls.Count; i++)
-            {
-                WebRequest request = WebRequest.Create($"https://data.statistik.gv.at/data/{urls[i]}.csv");
-                request.Method = "GET";
-                WebResponse response = request.GetResponse();
-                Stream stream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(stream);
-
-                int firstLineSkip = 0;
-
-                while (true)
-                {
-                    string line = reader.ReadLine();
-                    if (firstLineSkip > 0)
-                    {
-                        if (line == "")
-                        {
-                            break;
-                        }
-                        string[] results = new string[20];
-                        TryParse(line, out results);
-                        return results;
-                    }
-                    firstLineSkip++;
-                }
-                reader.Close();
-                response.Close();
-
-            }
-
-            return null;
-        }
-
-        private void TryParse(string line, out string[] results)
-        { 
-            // value von lines wird als objekt erzeugt
-            string[] lines = line.Split(";");
-            results =  lines;
-        }
-
-        public void TestDatabase()
+        public void FillDatabase()
         {
             string constring = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\lilia\\OneDrive\\Dokumente\\Schule\\pre\\5_klasse\\Projekt\\Krebsregister\\Krebsregister\\Krebsregister_Database.mdf;Integrated Security=True";
             SqlConnection connection = new SqlConnection(constring);
-            if(connection.State != System.Data.ConnectionState.Open)
+            if (connection.State != System.Data.ConnectionState.Open)
             {
                 connection.Open();
             }
 
-            SqlCommand cmd = new SqlCommand("insert into Test (id) values (@id)", connection);
-            cmd.Parameters.AddWithValue("@id", 1);
-            cmd.ExecuteNonQuery();
-            connection.Close();
+            var Geschlechtfields = ReadInCSV("https://data.statistik.gv.at/data/OGD_krebs_ext_KREBS_1_C-KRE_GESCHLECHT-0.csv");
+            for (int i = 0; i < Geschlechtfields.Count; i++)
+            {
+                string[] currentFields = Geschlechtfields[i];
+                string[] FieldsIDgesplittet = currentFields[0].Split("-");
+                SqlCommand cmd = new SqlCommand("insert into Geschlecht (GeschlechtID, Geschlecht) values (@GeschlechtID, @Geschlecht)", connection);
+                cmd.Parameters.AddWithValue("@GeschlechtID", FieldsIDgesplittet[1]);
+                cmd.Parameters.AddWithValue("@Geschlecht", currentFields[1]);
+                cmd.ExecuteNonQuery();
+            }
+
+            var Bundeslandfields = ReadInCSV("https://data.statistik.gv.at/data/OGD_krebs_ext_KREBS_1_C-BUNDESLAND-0.csv");
+            for (int i = 0; i < Bundeslandfields.Count; i++)
+            {
+                string[] currentFields = Bundeslandfields[i];
+                string[] FieldsIDgesplittet = currentFields[0].Split("-");
+                SqlCommand cmd = new SqlCommand("insert into Bundesland (BundeslandID, Name) values (@BundeslandID, @Name)", connection);
+                cmd.Parameters.AddWithValue("@BundeslandID", FieldsIDgesplittet[1]);
+                cmd.Parameters.AddWithValue("@Name", currentFields[1]);
+                cmd.ExecuteNonQuery();
+            }
+
+            var ICD10fields = ReadInCSV("https://data.statistik.gv.at/data/OGD_krebs_ext_KREBS_1_C-TUM_ICD10_3ST-0.csv");
+            for (int i = 0; i < ICD10fields.Count; i++)
+            {
+                string[] currentFields = ICD10fields[i];
+                string[] FieldsIDgesplittet = currentFields[0].Split("-");
+                SqlCommand cmd = new SqlCommand("insert into ICD10 (ICD10ID, ICD10Code, Bezeichnung) values (@ICD10ID, @ICD10Code, @Bezeichnung)", connection);
+                cmd.Parameters.AddWithValue("@ICD10ID", i+1);
+                cmd.Parameters.AddWithValue("@ICD10Code", FieldsIDgesplittet[1]);
+                cmd.Parameters.AddWithValue("@Bezeichnung", currentFields[1]);
+                cmd.ExecuteNonQuery();
+            }
+
+            var Eintragfields = ReadInCSV("https://data.statistik.gv.at/data/OGD_krebs_ext_KREBS_1.csv");
+            for (int i = 0; i < Eintragfields.Count; i++)
+            {
+                string[] currentFields = Eintragfields[i];
+
+            }
         }
     }
 }
